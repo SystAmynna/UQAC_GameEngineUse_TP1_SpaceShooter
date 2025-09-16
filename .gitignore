@@ -1,0 +1,92 @@
+﻿# Dossiers générés par Unreal Engine
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vscode/
+.vs/
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+# Fichiers de configuration locaux
+Config/DefaultEditor.ini
+Config/DefaultEngine.ini
+Config/DefaultGame.ini
+Config/DefaultInput.ini
+
+# Fichiers générés
+*.generated.h
+*.generated.cpp
+
+# Dossiers de binaires
+obj/
+Win64/
+Mac/
+Linux/
+Android/
+IOS/
+
+# Fichiers de package compilés
+*.uasset
+*.umap
+*.uproject.user
+
+# Logs et fichiers temporaires
+*.log
+*.bak
+*.TMP
+*.tmp
+
+# Spécifique à Visual Studio
+.vs/
+*.user
+*.userosscache
+*.VC.db
+*.VC.opendb
+ipch/
+x64/
+x86/
+
+# Cache et logs UE
+Saved/Autosaves/
+Saved/Backup/
+Saved/Logs/
+Saved/StagedBuilds/
+Saved/Cooked/
+
+# Dossiers spécifiques aux plugins
+Plugins/*/Intermediate/
+Plugins/*/Binaries/
+
+# Fichiers spécifiques aux plateformes
+*.apk
+*.dylib
+*.dll
+*.so
+*.a
+
+# Fichiers et dossiers JetBrains (IDEA, Rider, etc.)
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+out/
+cmake-build-*/
+*.user.sln.DotSettings
+*.csproj.DotSettings
+*.DotSettings.user
+
+# Fichiers de cache Rider
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
