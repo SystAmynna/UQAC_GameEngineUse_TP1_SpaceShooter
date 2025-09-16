@@ -22,17 +22,34 @@ public:
 
     // Méthodes de mouvement
     void MoveX(float value);
-    void MoveY(float Value);
+    void MoveY(float value);
+
+    // Méthodes pour les actions
+    void HoldLeft();
+    void HoldRight();
+    void HoldUp();
+    void HoldDown();
+    void ReleaseLeft();
+    void ReleaseRight();
+    void ReleaseUp();
+    void ReleaseDown();
 
 protected:
     // Composants
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* MeshComponent;
 
-    // UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-    // UCameraComponent* CameraComponent;
+    //UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    //UInputComponent* InputComponent;
 
     // Variables de configuration
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float MoveSpeed;
+    float MaxMoveSpeed;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    float Acceleration;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    FVector2D MovementDirection;
+
+private:
+    bool left, right, up, down;
 };
