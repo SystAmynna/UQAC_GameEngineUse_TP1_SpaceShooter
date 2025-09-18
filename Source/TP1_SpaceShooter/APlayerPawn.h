@@ -11,6 +11,10 @@ class TP1_SPACESHOOTER_API APlayerPawn : public APawn
 
 public:
     APlayerPawn(); // Constructeur
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UPawnMovementComponent* MovementComponent;
+    
     
     // Méthode appelée au début du jeu
     virtual void BeginPlay() override;
@@ -52,6 +56,4 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D MovementDirection;
 
-private:
-    bool left, right, up, down, stabilize;
 };
