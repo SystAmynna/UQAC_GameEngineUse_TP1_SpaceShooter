@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Camera/CameraComponent.h"
 #include "APlayerPawn.generated.h"
 
 UCLASS()
@@ -29,10 +28,13 @@ public:
     void HoldRight();
     void HoldUp();
     void HoldDown();
+    void HoldStabilize();
+    
     void ReleaseLeft();
     void ReleaseRight();
     void ReleaseUp();
     void ReleaseDown();
+    void ReleaseStabilize();
 
 protected:
     // Composants
@@ -51,5 +53,5 @@ protected:
     FVector2D MovementDirection;
 
 private:
-    bool left, right, up, down;
+    bool left, right, up, down, stabilize;
 };
