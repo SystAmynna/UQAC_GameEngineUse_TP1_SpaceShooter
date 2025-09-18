@@ -44,6 +44,9 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     
     PlayerInputComponent->BindAxis("axeX", this, &APlayerPawn::MoveX);
     PlayerInputComponent->BindAxis("axeY", this, &APlayerPawn::MoveY);
+
+    PlayerInputComponent->BindAction("Stabilize", IE_Pressed, this, &APlayerPawn::HoldStabilize);
+    PlayerInputComponent->BindAction("Stabilize", IE_Released, this, &APlayerPawn::ReleaseStabilize);
     
 }
 

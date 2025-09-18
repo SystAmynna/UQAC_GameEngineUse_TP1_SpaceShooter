@@ -28,16 +28,8 @@ public:
     void MoveY(float value);
 
     // Méthodes pour les actions
-    void HoldLeft();
-    void HoldRight();
-    void HoldUp();
-    void HoldDown();
-    void HoldStabilize();
     
-    void ReleaseLeft();
-    void ReleaseRight();
-    void ReleaseUp();
-    void ReleaseDown();
+    void HoldStabilize();
     void ReleaseStabilize();
 
 protected:
