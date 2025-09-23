@@ -51,7 +51,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float Acceleration;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    FVector2D MovementDirection;
+    FVector2D Velocity;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D TopLeftBorder;

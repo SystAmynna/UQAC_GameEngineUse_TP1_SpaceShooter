@@ -16,7 +16,7 @@ APlayerPawn::APlayerPawn()
     MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UFloatingPawnMovement>(TEXT("MovementComponent"));
     MovementComponent->UpdatedComponent = RootComponent;
 
-    MovementDirection = FVector2D::ZeroVector;
+    Velocity = FVector2D::ZeroVector;
     Acceleration = 0.1f;
     MaxMoveSpeed = 600.0f;
 
@@ -35,7 +35,7 @@ void APlayerPawn::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
     
 
-    AddMovementInput(FVector(MovementDirection.X, MovementDirection.Y, 0.0f),  1.0f);
+    AddMovementInput(FVector(Velocity.X, Velocity.Y, 0.0f),  1.0f);
 
     if (bHoldStabilize) Stabilize();
 
@@ -65,10 +65,10 @@ void APlayerPawn::MoveX(const float value)
 {
     if (value == 0.0f) return;
     
-    MovementDirection.X = MovementDirection.X + (value * Acceleration);
+    Velocity.X = Velocity.X + (value * Acceleration);
 
-    if (MovementDirection.X > MaxMoveSpeed) MovementDirection.X = MaxMoveSpeed;
-    if (MovementDirection.X < -MaxMoveSpeed) MovementDirection.X = -MaxMoveSpeed;
+    if (Velocity.X > MaxMoveSpeed) Velocity.X = MaxMoveSpeed;
+    if (Velocity.X < -MaxMoveSpeed) Velocity.X = -MaxMoveSpeed;
     
     //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move X");
     //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.X));
@@ -80,10 +80,10 @@ void APlayerPawn::MoveY(float value)
     
     if (value == 0.0f) return;
     
-    MovementDirection.Y = MovementDirection.Y + (value * Acceleration);
+    Velocity.Y = Velocity.Y + (value * Acceleration);
 
-    if (MovementDirection.Y > MaxMoveSpeed) MovementDirection.Y = MaxMoveSpeed;
-    if (MovementDirection.Y < -MaxMoveSpeed) MovementDirection.Y = -MaxMoveSpeed;
+    if (Velocity.Y > MaxMoveSpeed) Velocity.Y = MaxMoveSpeed;
+    if (Velocity.Y < -MaxMoveSpeed) Velocity.Y = -MaxMoveSpeed;
 
     //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move Y");
     //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.Y));
@@ -103,43 +103,43 @@ void APlayerPawn::ReleaseStabilize()
 void APlayerPawn::Stabilize()
 {
     
-    if (MovementDirection.X > 0)
+    if (Velocity.X > 0)
     {
-        MovementDirection.X -= Acceleration;
-        if (MovementDirection.X < Acceleration) MovementDirection.X = 0;
+        Velocity.X -= Acceleration;
+        if (Velocity.X < Acceleration) Velocity.X = 0;
     }
-    else if (MovementDirection.X < 0)
+    else if (Velocity.X < 0)
     {
-        MovementDirection.X += Acceleration;
-        if (MovementDirection.X > Acceleration) MovementDirection.X = 0;
+        Velocity.X += Acceleration;
+        if (Velocity.X > Acceleration) Velocity.X = 0;
     }
 
-    if (MovementDirection.Y > 0)
+    if (Velocity.Y > 0)
     {
-        MovementDirection.Y -= Acceleration;
-        if (MovementDirection.Y < Acceleration) MovementDirection.Y = 0;
+        Velocity.Y -= Acceleration;
+        if (Velocity.Y < Acceleration) Velocity.Y = 0;
     }
-    else if (MovementDirection.Y < 0)
+    else if (Velocity.Y < 0)
     {
-        MovementDirection.Y += Acceleration;
-        if (MovementDirection.Y > Acceleration) MovementDirection.Y = 0;
+        Velocity.Y += Acceleration;
+        if (Velocity.Y > Acceleration) Velocity.Y = 0;
     }
         
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "Stabilize" + FString::SanitizeFloat(MovementDirection.X) + " - " + FString::SanitizeFloat(MovementDirection.Y));
+    // GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "Stabilize" + FString::SanitizeFloat(MovementDirection.X) + " - " + FString::SanitizeFloat(MovementDirection.Y));
 }
 
 void APlayerPawn::CheckBorders()
 {
-    float X = GetActorLocation().X;
-    float Y = GetActorLocation().Y;
+    float const X = GetActorLocation().X;
+    float const Y = GetActorLocation().Y;
 
-    float topBorder = TopLeftBorder.Y;
-    float bottomBorder = BottomRightBorder.Y;
-    float leftBorder = TopLeftBorder.X;
-    float rightBorder = BottomRightBorder.X;
+    float const TopBorder = TopLeftBorder.Y;
+    float const BottomBorder = BottomRightBorder.Y;
+    float const LeftBorder = TopLeftBorder.X;
+    float const RightBorder = BottomRightBorder.X;
 
-    if ((X < leftBorder && MovementDirection.X < 0) || (X > rightBorder && MovementDirection.X > 0)) MovementDirection.X = MovementDirection.X * -1;
+    if ((X < LeftBorder && Velocity.X < 0) || (X > RightBorder && Velocity.X > 0)) Velocity.X = Velocity.X * -1;
     
-    if ((Y < topBorder && MovementDirection.Y < 0)|| (Y > bottomBorder && MovementDirection.Y > 0)) MovementDirection.Y = MovementDirection.Y * -1;
+    if ((Y < TopBorder && Velocity.Y < 0) || (Y > BottomBorder && Velocity.Y > 0)) Velocity.Y = Velocity.Y * -1;
     
 }
