@@ -19,6 +19,9 @@ APlayerPawn::APlayerPawn()
     MovementDirection = FVector2D::ZeroVector;
     Acceleration = 0.1f;
     MaxMoveSpeed = 600.0f;
+
+    TopLeftBorder = FVector2D(-1000.0f, -1000.0f);
+    BottomRightBorder = FVector2D(1000.0f, 1000.0f);
     
 }
 
@@ -35,6 +38,8 @@ void APlayerPawn::Tick(float DeltaTime)
     AddMovementInput(FVector(MovementDirection.X, MovementDirection.Y, 0.0f),  1.0f);
 
     if (bHoldStabilize) Stabilize();
+
+    CheckBorders();
     
     
 }
@@ -123,4 +128,18 @@ void APlayerPawn::Stabilize()
     GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "Stabilize" + FString::SanitizeFloat(MovementDirection.X) + " - " + FString::SanitizeFloat(MovementDirection.Y));
 }
 
+void APlayerPawn::CheckBorders()
+{
+    float X = GetActorLocation().X;
+    float Y = GetActorLocation().Y;
 
+    float topBorder = TopLeftBorder.Y;
+    float bottomBorder = BottomRightBorder.Y;
+    float leftBorder = TopLeftBorder.X;
+    float rightBorder = BottomRightBorder.X;
+
+    if ((X < leftBorder && MovementDirection.X < 0) || (X > rightBorder && MovementDirection.X > 0)) MovementDirection.X = MovementDirection.X * -1;
+    
+    if ((Y < topBorder && MovementDirection.Y < 0)|| (Y > bottomBorder && MovementDirection.Y > 0)) MovementDirection.Y = MovementDirection.Y * -1;
+    
+}

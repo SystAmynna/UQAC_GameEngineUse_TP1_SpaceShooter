@@ -33,6 +33,10 @@ public:
     void ReleaseStabilize();
     void Stabilize();
 
+    // bordures
+
+    void CheckBorders();
+
 protected:
     // Composants
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -48,6 +52,12 @@ protected:
     float Acceleration;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D MovementDirection;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    FVector2D TopLeftBorder;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+    FVector2D BottomRightBorder;
+    
 
     bool bHoldStabilize;
 
