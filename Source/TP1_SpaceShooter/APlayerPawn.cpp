@@ -33,6 +33,9 @@ void APlayerPawn::Tick(float DeltaTime)
     
 
     AddMovementInput(FVector(MovementDirection.X, MovementDirection.Y, 0.0f),  1.0f);
+
+    if (bHoldStabilize) Stabilize();
+    
     
 }
 
@@ -62,8 +65,8 @@ void APlayerPawn::MoveX(const float value)
     if (MovementDirection.X > MaxMoveSpeed) MovementDirection.X = MaxMoveSpeed;
     if (MovementDirection.X < -MaxMoveSpeed) MovementDirection.X = -MaxMoveSpeed;
     
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move X");
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.X));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move X");
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.X));
     
 }
 
@@ -77,7 +80,47 @@ void APlayerPawn::MoveY(float value)
     if (MovementDirection.Y > MaxMoveSpeed) MovementDirection.Y = MaxMoveSpeed;
     if (MovementDirection.Y < -MaxMoveSpeed) MovementDirection.Y = -MaxMoveSpeed;
 
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move Y");
-    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.Y));
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "move Y");
+    //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "" + FString::SanitizeFloat(MovementDirection.Y));
     
 }
+
+void APlayerPawn::HoldStabilize()
+{
+    bHoldStabilize = true;
+}
+
+void APlayerPawn::ReleaseStabilize()
+{
+    bHoldStabilize = false;
+}
+
+void APlayerPawn::Stabilize()
+{
+    
+    if (MovementDirection.X > 0)
+    {
+        MovementDirection.X -= Acceleration;
+        if (MovementDirection.X < Acceleration) MovementDirection.X = 0;
+    }
+    else if (MovementDirection.X < 0)
+    {
+        MovementDirection.X += Acceleration;
+        if (MovementDirection.X > Acceleration) MovementDirection.X = 0;
+    }
+
+    if (MovementDirection.Y > 0)
+    {
+        MovementDirection.Y -= Acceleration;
+        if (MovementDirection.Y < Acceleration) MovementDirection.Y = 0;
+    }
+    else if (MovementDirection.Y < 0)
+    {
+        MovementDirection.Y += Acceleration;
+        if (MovementDirection.Y > Acceleration) MovementDirection.Y = 0;
+    }
+        
+    GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, "Stabilize" + FString::SanitizeFloat(MovementDirection.X) + " - " + FString::SanitizeFloat(MovementDirection.Y));
+}
+
+

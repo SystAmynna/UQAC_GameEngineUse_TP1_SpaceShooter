@@ -31,6 +31,7 @@ public:
     
     void HoldStabilize();
     void ReleaseStabilize();
+    void Stabilize();
 
 protected:
     // Composants
@@ -47,5 +48,7 @@ protected:
     float Acceleration;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D MovementDirection;
+
+    bool bHoldStabilize;
 
 };
