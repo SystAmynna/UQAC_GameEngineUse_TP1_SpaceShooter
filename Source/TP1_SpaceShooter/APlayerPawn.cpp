@@ -193,11 +193,5 @@ void APlayerPawn::LoseLife(int32 Amount)
 {
     VieCurrent = FMath::Max(0, VieCurrent - FMath::Max(1, Amount));
 
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-            FString::Printf(TEXT("Vie: %d/%d"), VieCurrent, VieMax));
-    }
-
     // TODO: gérer la mort/respawn si VieCurrent == 0
 }
