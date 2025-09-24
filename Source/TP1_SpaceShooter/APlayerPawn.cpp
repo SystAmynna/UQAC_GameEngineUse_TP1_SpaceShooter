@@ -41,7 +41,7 @@ void APlayerPawn::BeginPlay()
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Utiliser les fleches pour bouger");
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Espace pour stabiliser");
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "E pour tirer");
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, "Menu principal pas finit d'être implémenté");
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, "Menu principal pas finit !");
     
 }
 
