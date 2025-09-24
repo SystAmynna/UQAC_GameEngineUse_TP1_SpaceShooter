@@ -37,6 +37,10 @@ void APlayerPawn::Tick(float DeltaTime)
 
     AddMovementInput(FVector(Velocity.X, Velocity.Y, 0.0f),  1.0f);
 
+    FVector NewLocation = GetActorLocation();
+    NewLocation.Z = 500.0f;
+    SetActorLocation(NewLocation);
+
     if (bHoldStabilize) Stabilize();
 
     CheckBorders();
