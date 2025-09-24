@@ -151,3 +151,16 @@ void APlayerPawn::CheckBorders()
     if ((Y < TopBorder && Velocity.Y < 0) || (Y > BottomBorder && Velocity.Y > 0)) Velocity.Y = Velocity.Y * -1;
     
 }
+
+void APlayerPawn::LoseLife(int32 Amount)
+{
+    VieCurrent = FMath::Max(0, VieCurrent - FMath::Max(1, Amount));
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
+            FString::Printf(TEXT("Vie: %d/%d"), VieCurrent, VieMax));
+    }
+
+    // TODO: gérer la mort/respawn si VieCurrent == 0
+}

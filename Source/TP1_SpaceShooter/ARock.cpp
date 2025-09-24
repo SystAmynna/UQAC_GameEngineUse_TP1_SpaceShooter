@@ -1,7 +1,12 @@
-// ----- File: 'Source/TP1_SpaceShooter/ARock.cpp' -----
+// cpp
+// Fichier: 'Source/TP1_SpaceShooter/ARock.cpp'
 #include "ARock.h"
+#include "ARockManager.h"
+#include "APlayerPawn.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "EngineUtils.h"
+#include "Engine/Engine.h"
 
 AARock::AARock()
 {
@@ -10,7 +15,13 @@ AARock::AARock()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	SetRootComponent(MeshComponent);
 
-	MeshComponent->SetCollisionProfileName(UCollisionProfile::BlockAll_ProfileName);
+	// Overlap pour générer des événements de collision
+	MeshComponent->SetMobility(EComponentMobility::Movable);
+	MeshComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+	MeshComponent->SetGenerateOverlapEvents(true);
+	MeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AARock::OnOverlapBegin);
+
+	// Pas de physique pour un mouvement piloté par code
 	MeshComponent->SetSimulatePhysics(false);
 }
 
@@ -18,7 +29,6 @@ void AARock::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Rotation initiale aléatoire
 	const FRotator RandRot(
 		FMath::FRandRange(0.f, 360.f),
 		FMath::FRandRange(0.f, 360.f),
@@ -30,15 +40,50 @@ void AARock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Déplacement
-	AddActorWorldOffset(Velocity * DeltaTime * 2.0f, true);
+	// Déplacement sans sweep pour ne pas bloquer les overlaps
+	AddActorWorldOffset(Velocity * DeltaTime, /*bSweep=*/false);
 
-	// Rotation
 	MeshComponent->AddLocalRotation(FRotator(0.f, RotationSpeed * DeltaTime, 0.f));
 }
 
 void AARock::SetVelocity(const FVector& InVelocity)
 {
 	Velocity = InVelocity;
-	GEngine->AddOnScreenDebugMessage( -1, 5.f, FColor::Yellow, FString::Printf(TEXT("Asteroid Velocity set to: %s"), *Velocity.ToString()) );
+}
+
+void AARock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                            const FHitResult& SweepResult)
+{
+	if (!OtherActor || OtherActor == this) return;
+
+	// Rock ↔ Rock : détruire les deux
+	if (AARock* OtherRock = Cast<AARock>(OtherActor))
+	{
+		if (IsValid(OtherRock))
+		{
+			OtherRock->Destroy();
+		}
+		Destroy();
+		return;
+	}
+
+	// Player ↔ Rock : -1 vie et destruction de tous les astéroïdes
+	if (APlayerPawn* Player = Cast<APlayerPawn>(OtherActor))
+	{
+		Player->LoseLife(1);
+
+		if (OwnerManager.IsValid())
+		{
+			OwnerManager->DestroyAllAsteroids();
+		}
+		else
+		{
+			// Fallback si pas de manager référencé
+			for (TActorIterator<AARock> It(GetWorld()); It; ++It)
+			{
+				if (IsValid(*It)) { It->Destroy(); }
+			}
+		}
+	}
 }

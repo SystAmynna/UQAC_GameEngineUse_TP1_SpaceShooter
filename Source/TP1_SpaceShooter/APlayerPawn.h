@@ -37,6 +37,18 @@ public:
 
     void CheckBorders();
 
+
+    // Points de vie
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Player")
+    int32 VieMax = 3;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Player")
+    int32 VieCurrent = 0;
+
+    // Perdre de la vie lors d'une collision avec un astéroïde
+    UFUNCTION(BlueprintCallable, Category="Player")
+    void LoseLife(int32 Amount = 1);
+
 protected:
     // Composants
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -57,11 +69,7 @@ protected:
     FVector2D TopLeftBorder;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D BottomRightBorder;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Statistiques")
-    int VieMax;
-    int VieCurrent;
-
+    
     bool bHoldStabilize;
 
 };
