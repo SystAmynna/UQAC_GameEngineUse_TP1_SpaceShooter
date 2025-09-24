@@ -93,7 +93,10 @@ void APlayerPawn::UpdateFacingFromKeys()
     if (dx == 0 && dy == 0) return;
 
     // Yaw en degrés (mesh supposé orienté +X à yaw=0)
-    const float Yaw = FMath::RadiansToDegrees(FMath::Atan2((float)dy, (float)dx)) + FacingYawOffset;
+    float Yaw = FMath::RadiansToDegrees(FMath::Atan2((float)dy, (float)dx)) + FacingYawOffset;
+
+    //ajouter 90 degres
+    Yaw += 90.f;
 
     // Orientation uniquement du mesh (pas de l’actor)
     if (MeshComponent)
