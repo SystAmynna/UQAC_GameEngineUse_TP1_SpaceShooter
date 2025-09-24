@@ -1,6 +1,10 @@
 ﻿#include "APlayerPawn.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "SpaceProjectile.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
+#include "Engine/Engine.h"
 
 APlayerPawn::APlayerPawn()
 {
@@ -66,6 +70,9 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
     PlayerInputComponent->BindAction("Stabilize", IE_Pressed, this, &APlayerPawn::HoldStabilize);
     PlayerInputComponent->BindAction("Stabilize", IE_Released, this, &APlayerPawn::ReleaseStabilize);
+
+    PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &APlayerPawn::OnShoot);
+    PlayerInputComponent->BindAction("Shoot", IE_Released, this, &APlayerPawn::OffShoot);
     
 }
 
@@ -85,8 +92,62 @@ void APlayerPawn::UpdateFacingFromKeys()
     if (MeshComponent)
     {
         MeshComponent->SetRelativeRotation(FRotator(0.f, Yaw, 0.f));
+        CurrentYaw = Yaw; // mémorise l’orientation du joueur
     }
 }
+
+
+void APlayerPawn::OnShoot()
+{
+    bIsShooting = true;
+
+    if (!GetWorldTimerManager().IsTimerActive(FireTimerHandle))
+    {
+        // Tir immédiat puis cadence régulière
+        FireOnce();
+        GetWorldTimerManager().SetTimer(FireTimerHandle, this, &APlayerPawn::FireOnce, FireInterval, true);
+    }
+}
+
+void APlayerPawn::OffShoot()
+{
+    bIsShooting = false;
+    GetWorldTimerManager().ClearTimer(FireTimerHandle);
+}
+
+void APlayerPawn::FireOnce()
+{
+    if (!bIsShooting) return;
+    if (!ProjectileClass) return;
+
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    // Direction = où pointe le joueur (forward du mesh)
+    const FRotator MeshRot = MeshComponent ? MeshComponent->GetComponentRotation()
+                                           : FRotator(0.f, CurrentYaw, 0.f);
+    const FVector Forward = MeshRot.Vector();
+
+    // Position du canon en local, tournée par la rotation du mesh
+    FVector MuzzleLocation = GetActorLocation() + MeshRot.RotateVector(MuzzleLocalOffset);
+    // Verrouiller le Z au plan de jeu
+    MuzzleLocation.Z = GetActorLocation().Z;
+
+    FActorSpawnParameters Params;
+    Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+    Params.Owner = this;
+    Params.Instigator = this;
+
+    ASpaceProjectile* Proj = World->SpawnActor<ASpaceProjectile>(ProjectileClass, MuzzleLocation, MeshRot, Params);
+    if (Proj)
+    {
+        Proj->InitVelocity(Forward, ProjectileSpeed);
+    } else
+    {
+        GEngine -> AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, TEXT("Nope"));
+    }
+}
+
 
 
 void APlayerPawn::MoveX(const float value)

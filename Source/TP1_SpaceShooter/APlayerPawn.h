@@ -72,11 +72,30 @@ protected:
     
     bool bHoldStabilize;
 
+    UPROPERTY(EditAnywhere, Category="Combat")
+    TSubclassOf<class ASpaceProjectile> ProjectileClass;
+
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float ProjectileSpeed = 1500.f;
+
+    UPROPERTY(EditAnywhere, Category="Combat")
+    FVector MuzzleLocalOffset = FVector(100.f, 0.f, 0.f);
+
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float FireInterval = 0.2f;
+
 
 public:
     // Décalage si votre mesh ne « regarde » pas +X à yaw=0
     UPROPERTY(EditAnywhere, Category="Player|View")
     float FacingYawOffset = 0.f;
+
+    UFUNCTION()
+    void OnShoot();
+    UFUNCTION()
+    void OffShoot();
+    UFUNCTION()
+    void FireOnce();
 
 protected:
     // Met à jour l'orientation du mesh selon l'état des touches
@@ -87,5 +106,12 @@ private:
     bool bLeftPressed  = false;
     bool bUpPressed    = false;
     bool bDownPressed  = false;
+
+    bool bIsShooting = false;
+    FTimerHandle FireTimerHandle;
+
+    // Yaw courant du mesh pour orienter le tir (mis à jour par UpdateFacingFromKeys)
+    UPROPERTY(VisibleAnywhere, Category="Player|View")
+    float CurrentYaw = 0.f;
 
 };
