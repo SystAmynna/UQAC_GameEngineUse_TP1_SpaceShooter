@@ -48,6 +48,9 @@ void APlayerPawn::Tick(float DeltaTime)
     if (bHoldStabilize) Stabilize();
 
     CheckBorders();
+
+    // Orientation du mesh basée sur les touches (pas la vélocité)
+    UpdateFacingFromKeys();
     
     
 }
@@ -66,12 +69,34 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
     
 }
 
+void APlayerPawn::UpdateFacingFromKeys()
+{
+    // XOR par axe : si touches opposées enfoncées, on ignore l’axe
+    int32 dx = (bRightPressed != bLeftPressed) ? (bRightPressed ? 1 : -1) : 0;
+    int32 dy = (bUpPressed    != bDownPressed) ? (bUpPressed    ? 1 : -1) : 0;
 
+    // Si aucune direction nette, on n’oriente pas (ignore)
+    if (dx == 0 && dy == 0) return;
+
+    // Yaw en degrés (mesh supposé orienté +X à yaw=0)
+    const float Yaw = FMath::RadiansToDegrees(FMath::Atan2((float)dy, (float)dx)) + FacingYawOffset;
+
+    // Orientation uniquement du mesh (pas de l’actor)
+    if (MeshComponent)
+    {
+        MeshComponent->SetRelativeRotation(FRotator(0.f, Yaw, 0.f));
+    }
+}
 
 
 void APlayerPawn::MoveX(const float value)
 {
+    bRightPressed = false;
+    bLeftPressed = false;
     if (value == 0.0f) return;
+
+    if (value > 0.0f) bRightPressed = true;
+    else if (value < 0.0f) bLeftPressed = true;
     
     Velocity.X = Velocity.X + (value * Acceleration);
 
@@ -85,8 +110,12 @@ void APlayerPawn::MoveX(const float value)
 
 void APlayerPawn::MoveY(float value)
 {
-    
+
+    bUpPressed = false;
+    bDownPressed = false;
     if (value == 0.0f) return;
+    if (value > 0.0f) bUpPressed = true;
+    else if (value < 0.0f) bDownPressed = true;
     
     Velocity.Y = Velocity.Y + (value * Acceleration);
 
@@ -110,26 +139,34 @@ void APlayerPawn::ReleaseStabilize()
 
 void APlayerPawn::Stabilize()
 {
+    bRightPressed = false;
+    bLeftPressed = false;
+    bUpPressed = false;
+    bDownPressed = false;
     
     if (Velocity.X > 0)
     {
         Velocity.X -= Acceleration;
+        bLeftPressed = true;
         if (Velocity.X < Acceleration) Velocity.X = 0;
     }
     else if (Velocity.X < 0)
     {
         Velocity.X += Acceleration;
+        bRightPressed = true;
         if (Velocity.X > Acceleration) Velocity.X = 0;
     }
 
     if (Velocity.Y > 0)
     {
         Velocity.Y -= Acceleration;
+        bDownPressed = true;
         if (Velocity.Y < Acceleration) Velocity.Y = 0;
     }
     else if (Velocity.Y < 0)
     {
         Velocity.Y += Acceleration;
+        bUpPressed = true;
         if (Velocity.Y > Acceleration) Velocity.Y = 0;
     }
         

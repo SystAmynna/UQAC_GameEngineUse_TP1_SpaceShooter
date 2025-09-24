@@ -72,4 +72,20 @@ protected:
     
     bool bHoldStabilize;
 
+
+public:
+    // Décalage si votre mesh ne « regarde » pas +X à yaw=0
+    UPROPERTY(EditAnywhere, Category="Player|View")
+    float FacingYawOffset = 0.f;
+
+protected:
+    // Met à jour l'orientation du mesh selon l'état des touches
+    void UpdateFacingFromKeys();
+
+private:
+    bool bRightPressed = false;
+    bool bLeftPressed  = false;
+    bool bUpPressed    = false;
+    bool bDownPressed  = false;
+
 };
