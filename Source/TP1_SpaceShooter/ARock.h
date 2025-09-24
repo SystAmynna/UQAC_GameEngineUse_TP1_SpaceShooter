@@ -43,8 +43,12 @@
 	
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Movement")
 		float RotationSpeed = 50.0f;
+
+		void Hit();
 	
 	private:
 		UPROPERTY()
 		TWeakObjectPtr<AARockManager> OwnerManager;
+
+		int32 Vie;
 	};

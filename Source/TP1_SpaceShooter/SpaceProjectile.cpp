@@ -22,7 +22,7 @@
 	{
 	    Super::BeginPlay();
 
-		GEngine -> AddOnScreenDebugMessage(-1, 1.5f, FColor::Yellow, TEXT("Pew!"));
+		//GEngine -> AddOnScreenDebugMessage(-1, 1.5f, FColor::Yellow, TEXT("Pew!"));
 	
 	    // Ignore son Owner pour éviter l’auto-collision
 	    if (AActor* OwnerActor = GetOwner())
@@ -37,6 +37,13 @@
 	
 	    // Déplacement à la manière des astéroïdes
 	    AddActorWorldOffset(Velocity * DeltaSeconds, /*bSweep=*/false);
+
+		FVector pos = GetActorLocation();
+		if (pos.X > 3000 || pos.X < -3000 || pos.Y > 2000 || pos.Y < -2000)
+		{
+			Destroy();
+		}
+		
 	}
 	
 	void ASpaceProjectile::InitVelocity(const FVector& ShootDir, float Speed)
@@ -52,7 +59,9 @@
 	{
 	    if (!OtherActor || OtherActor == this || OtherActor == GetOwner())
 	        return;
-	
+
+
+		
 	    // Détruire le projectile au premier contact (comportement minimal)
 	    Destroy();
 	}

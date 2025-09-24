@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "EngineUtils.h"
+#include "SpaceProjectile.h"
 #include "Engine/Engine.h"
 
 AARock::AARock()
@@ -34,6 +35,8 @@ void AARock::BeginPlay()
 		FMath::FRandRange(0.f, 360.f),
 		FMath::FRandRange(0.f, 360.f));
 	MeshComponent->AddLocalRotation(RandRot);
+
+	Vie = FMath::RandRange(1, 3);
 }
 
 void AARock::Tick(float DeltaTime)
@@ -85,5 +88,21 @@ void AARock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 				if (IsValid(*It)) { It->Destroy(); }
 			}
 		}
+	}
+
+	if (ASpaceProjectile * Projectile = Cast<ASpaceProjectile>(OtherActor))
+	{
+		Hit();
+		Projectile->Destroy();
+	}
+	
+}
+
+void AARock::Hit()
+{
+	Vie--;
+	if (Vie <= 0)
+	{
+		Destroy();
 	}
 }
