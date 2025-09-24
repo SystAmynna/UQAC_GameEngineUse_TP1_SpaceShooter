@@ -57,7 +57,10 @@ protected:
     FVector2D TopLeftBorder;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     FVector2D BottomRightBorder;
-    
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Statistiques")
+    int VieMax;
+    int VieCurrent;
 
     bool bHoldStabilize;
 

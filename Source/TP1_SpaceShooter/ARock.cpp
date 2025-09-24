@@ -31,7 +31,7 @@ void AARock::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Déplacement
-	AddActorWorldOffset(Velocity * DeltaTime * 10.0f, true);
+	AddActorWorldOffset(Velocity * DeltaTime * 2.0f, true);
 
 	// Rotation
 	MeshComponent->AddLocalRotation(FRotator(0.f, RotationSpeed * DeltaTime, 0.f));

@@ -22,12 +22,16 @@ APlayerPawn::APlayerPawn()
 
     TopLeftBorder = FVector2D(-1000.0f, -1000.0f);
     BottomRightBorder = FVector2D(1000.0f, 1000.0f);
+
+    VieMax = 3;
+    
     
 }
 
 void APlayerPawn::BeginPlay()
 {
     Super::BeginPlay();
+    VieCurrent = VieMax;
 }
 
 void APlayerPawn::Tick(float DeltaTime)
