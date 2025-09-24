@@ -101,8 +101,16 @@ void AARock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 void AARock::Hit()
 {
 	Vie--;
+	const int32 hval = 10;
+	const int32 dval = 50;
+
+	
+
+	APlayerPawn* Player = Cast<APlayerPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
 	if (Vie <= 0)
 	{
+		if (Player) Player->AddScore(dval);
 		Destroy();
-	}
+	} else if (Player) Player->AddScore(hval);
 }

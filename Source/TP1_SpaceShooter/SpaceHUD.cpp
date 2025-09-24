@@ -44,7 +44,22 @@ void ASpaceHUD::DrawHUD()
 	// Afficher en haut à gauche
 	FVector2D ScreenPos(50, 50); // position en pixels
 	float Scale = 1.5f;
+	const float Margin = 50.f;
 
 	UFont* DefaultFont = GEngine->GetLargeFont(); // Exemple d'utilisation d'une police par défaut
 	DrawText(HealthString, Color, ScreenPos.X, ScreenPos.Y, DefaultFont, Scale, false);
+
+	// --- AFFICHAGE DU SCORE (en haut à droite) ---
+	FString ScoreString = FString::Printf(TEXT("Score: %d"), PlayerPawn->Score);
+
+	// Calculer la taille du texte pour l'aligner à droite
+	float TextWidth, TextHeight;
+	GetTextSize(ScoreString, TextWidth, TextHeight, DefaultFont, Scale);
+
+	// Position en haut à droite
+	FVector2D ScorePos(Canvas->SizeX - TextWidth - Margin, Margin);
+
+	DrawText(ScoreString, FLinearColor::White, ScorePos.X, ScorePos.Y, DefaultFont, Scale, false);
+
+	
 }

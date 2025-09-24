@@ -55,6 +55,9 @@ public:
     UFUNCTION(BlueprintCallable, Category="Levels")
     void GoToMenu();
 
+    int32 Score = 0;
+    void AddScore(int32 Amount) { Score += Amount; }
+
 protected:
     // Composants
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
