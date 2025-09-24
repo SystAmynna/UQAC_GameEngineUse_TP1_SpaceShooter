@@ -96,12 +96,12 @@ void APlayerPawn::UpdateFacingFromKeys()
     float Yaw = FMath::RadiansToDegrees(FMath::Atan2((float)dy, (float)dx)) + FacingYawOffset;
 
     //ajouter 90 degres
-    Yaw += 90.f;
+    // Yaw += 90.f;
 
     // Orientation uniquement du mesh (pas de l’actor)
     if (MeshComponent)
     {
-        MeshComponent->SetRelativeRotation(FRotator(0.f, Yaw, 0.f));
+        MeshComponent->SetRelativeRotation(FRotator(0.f, Yaw +90.0f, 0.f));
         CurrentYaw = Yaw; // mémorise l’orientation du joueur
     }
 }
@@ -127,34 +127,37 @@ void APlayerPawn::OffShoot()
 
 void APlayerPawn::FireOnce()
 {
-    if (!bIsShooting) return;
-    if (!ProjectileClass) return;
+    if (!bIsShooting || !ProjectileClass || !MeshComponent) return;
 
     UWorld* World = GetWorld();
     if (!World) return;
 
-    // Direction = où pointe le joueur (forward du mesh)
-    const FRotator MeshRot = MeshComponent ? MeshComponent->GetComponentRotation()
-                                           : FRotator(0.f, CurrentYaw, 0.f);
-    const FVector Forward = MeshRot.Vector();
+    // On récupère la rotation et la position actuelles du mesh dans le monde
+    const FRotator _MeshWorldRotation = MeshComponent->GetComponentRotation();
+    const FRotator MeshWorldRotation = _MeshWorldRotation + FRotator(0.0f,  -90.0f, 0.0f); // on ignore le pitch et le roll
+    const FVector MeshWorldLocation = MeshComponent->GetComponentLocation();
 
-    // Position du canon en local, tournée par la rotation du mesh
-    FVector MuzzleLocation = GetActorLocation() + MeshRot.RotateVector(MuzzleLocalOffset);
-    // Verrouiller le Z au plan de jeu
-    MuzzleLocation.Z = GetActorLocation().Z;
+    // La direction du tir est le vecteur "avant" du mesh
+    const FVector FireDirection = MeshWorldRotation.Vector();
+
+    // La position de départ du projectile est calculée à partir de la position du mesh,
+    // en ajoutant un décalage (MuzzleLocalOffset) qui est tourné selon l'orientation du mesh.
+    FVector MuzzleLocation = MeshWorldLocation + MeshWorldRotation.RotateVector(MuzzleLocalOffset);
 
     FActorSpawnParameters Params;
     Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
     Params.Owner = this;
     Params.Instigator = this;
 
-    ASpaceProjectile* Proj = World->SpawnActor<ASpaceProjectile>(ProjectileClass, MuzzleLocation, MeshRot, Params);
+    // On fait apparaître le projectile avec la bonne rotation
+    ASpaceProjectile* Proj = World->SpawnActor<ASpaceProjectile>(ProjectileClass, MuzzleLocation, MeshWorldRotation, Params);
     if (Proj)
     {
-        Proj->InitVelocity(Forward, ProjectileSpeed);
-    } else
+        Proj->InitVelocity(FireDirection, ProjectileSpeed);
+    }
+    else
     {
-        GEngine -> AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, TEXT("Nope"));
+        GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, TEXT("Failed to spawn projectile."));
     }
 }
 
