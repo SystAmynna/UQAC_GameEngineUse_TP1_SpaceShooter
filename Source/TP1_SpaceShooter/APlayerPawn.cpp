@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 APlayerPawn::APlayerPawn()
 {
@@ -254,5 +255,18 @@ void APlayerPawn::LoseLife(int32 Amount)
 {
     VieCurrent = FMath::Max(0, VieCurrent - FMath::Max(1, Amount));
 
-    // TODO: gérer la mort/respawn si VieCurrent == 0
+    if (VieCurrent <= 0)
+    {
+        // Gérer la mort du joueur (par exemple, recharger le niveau ou afficher un écran de fin de jeu)
+        GoToMenu();
+    }
+}
+
+void APlayerPawn::GoToMenu()
+{
+    if (MenuLevelName.IsNone())
+        return;
+
+    // Charge le niveau menu
+    UGameplayStatics::OpenLevel(this, MenuLevelName);
 }

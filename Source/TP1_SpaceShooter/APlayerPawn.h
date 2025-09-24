@@ -49,6 +49,12 @@ public:
     UFUNCTION(BlueprintCallable, Category="Player")
     void LoseLife(int32 Amount = 1);
 
+    UPROPERTY(EditDefaultsOnly, Category="Levels")
+    FName MenuLevelName = FName("Menu");
+
+    UFUNCTION(BlueprintCallable, Category="Levels")
+    void GoToMenu();
+
 protected:
     // Composants
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
