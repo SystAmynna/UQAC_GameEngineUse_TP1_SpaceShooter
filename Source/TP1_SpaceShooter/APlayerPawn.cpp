@@ -38,7 +38,7 @@ void APlayerPawn::BeginPlay()
     Super::BeginPlay();
     VieCurrent = VieMax;
 
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Utiliser les fleches pour bouger");
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Utilisez les touches flechees pour vous deplacer.");
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "Espace pour stabiliser");
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, "E pour tirer");
     
